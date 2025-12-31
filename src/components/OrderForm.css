@@ -1,0 +1,228 @@
+/* src/components/OrderForm.css */
+
+.external-form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  min-height: 90vh;
+}
+
+.order-form-card {
+  background: #18181b; /* Couleur de carte sombre */
+  border: 1px solid #27272a;
+  padding: 2.5rem;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.5s ease-out;
+}
+
+.order-form-card h2 {
+  color: #f8fafc;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  font-size: 1.75rem;
+}
+
+.order-form-card p {
+  color: #94a3b8;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 0.9rem;
+}
+
+/* Style commun pour les inputs, select et textarea */
+.form-input {
+  width: 100%;
+  padding: 14px 16px;
+  background: #09090b;
+  border: 1px solid #3f3f46;
+  border-radius: 12px;
+  color: #ffffff;
+  font-size: 1rem;
+  margin-bottom: 1.2rem;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.form-input:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* Style spécifique pour la liste déroulante (select) */
+select.form-input {
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+/* Zone de la ligne (Quantité et Prix) */
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 15px;
+}
+
+/* Style du champ Prix en lecture seule */
+.readonly-input-wrapper {
+  position: relative;
+}
+
+.readonly-field {
+  background-color: #111113 !important;
+  color: #10b981 !important; /* Texte en vert pour le prix */
+  font-weight: 700;
+  cursor: not-allowed;
+  border-color: rgba(16, 185, 129, 0.3) !important;
+}
+
+.input-icon {
+  position: absolute;
+  right: 12px;
+  top: 40%;
+  transform: translateY(-50%);
+  color: #10b981;
+  opacity: 0.6;
+}
+
+/* Groupe Date */
+.date-input-group {
+  margin-bottom: 1.2rem;
+}
+.vendeur-input-wrapper {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.input-icon-left {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #10b981;
+}
+
+.icon-padding {
+  padding-left: 45px !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+  background: rgba(16, 185, 129, 0.05) !important;
+}
+
+.divider-form {
+  height: 1px;
+  background: #27272a;
+  margin: 1.5rem 0;
+  position: relative;
+}
+
+.divider-form::after {
+  content: "Infos Client";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #18181b;
+  padding: 0 10px;
+  font-size: 0.7rem;
+  color: #71717a;
+  text-transform: uppercase;
+}
+
+.date-input-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+/* Forcer l'icône calendrier en blanc/clair */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.8);
+  cursor: pointer;
+}
+
+/* Textarea */
+textarea.form-input {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Bouton Envoyer */
+.btn-send {
+  width: 100%;
+  padding: 16px;
+  background: #10b981;
+  color: #000;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+}
+
+.btn-send:hover {
+  background: #34d399;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.3);
+}
+
+/* Message de succès */
+.success-msg {
+  text-align: center;
+  padding: 20px;
+  animation: scaleIn 0.3s ease-out;
+}
+
+.success-msg h2 {
+  color: #10b981;
+  margin-top: 1rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .order-form-card {
+    padding: 1.5rem;
+  }
+  .row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
