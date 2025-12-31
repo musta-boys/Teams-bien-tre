@@ -1,0 +1,7 @@
+.gallery-container { padding: 40px 5%; background-color: #f8fafc; }
+.gallery-title { text-align: center; color: #2c3e50; margin-bottom: 30px; font-size: 2rem; }
+.product-grid { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+  gap: 25px; 
+}
