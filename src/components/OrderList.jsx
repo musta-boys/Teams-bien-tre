@@ -1,38 +1,33 @@
-import React from "react";
-import { ShoppingCart } from "lucide-react";
+// Dans ton fichier principal React (ex: App.js ou le parent de OrderList)
+import React, { useState, useEffect } from "react";
 
-export default function OrderList({ orders, onProcess }) {
-  return (
-    <div className="view-container">
-      <h1>Commandes Entrantes</h1>
-      <div className="orders-list">
-        {orders.map((order) => (
-          <div key={order.id} className="order-card">
-            <div className="order-info">
-              <div className="icon-web">
-                <ShoppingCart color="white" size={20} />
-              </div>
-              <div>
-                <h3>
-                  {order.nom}{" "}
-                  <small style={{ color: "#94a3b8" }}>
-                    ({order.telephone})
-                  </small>
-                </h3>
-                <p>
-                  {order.produit} x{order.quantite} — {order.adresse}
-                </p>
-              </div>
-            </div>
-            <div className="order-actions">
-              <span className="price-tag">{order.montant} $</span>
-              <button className="btn-primary" onClick={() => onProcess(order)}>
-                Traiter
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+function App() {
+  const [externalOrders, setExternalOrders] = useState([]);
+  const API_URL = "https://ton-api-backend.onrender.com/commandes";
+
+  // Fonction pour récupérer les commandes depuis l'API
+  const fetchOrders = async () => {
+    try {
+      const response = await fetch(API_URL);
+      const data = await response.json();
+      setExternalOrders(data);
+    } catch (error) {
+      console.error("Erreur de récupération des commandes:", error);
+    }
+  };
+
+  // On vérifie les nouvelles commandes toutes les 20 secondes
+  useEffect(() => {
+    fetchOrders();
+    const interval = setInterval(fetchOrders, 20000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Cette fonction sera passée à ton composant OrderList
+  const handleProcessOrder = (order) => {
+    // Logique pour transformer la commande en facture (BillingForm)
+    console.log("Traitement de la commande:", order);
+  };
+
+  // ... le reste de ton rendu avec Sidebar et DashboardView
 }

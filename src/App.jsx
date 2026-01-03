@@ -8,6 +8,9 @@ import HistoryTable from "./components/HistoryTable";
 import OrderForm from "./components/OrderForm";
 import "./App.css";
 
+// URL de ton backend
+const API_URL = "https://my-node-api-8frq.onrender.com";
+
 export default function App() {
   const [currentView, setCurrentView] = useState("dashboard");
   const [alert, setAlert] = useState(null);
@@ -28,30 +31,36 @@ export default function App() {
     quantite: "1",
   });
 
-  // Sauvegarde automatique de l'historique dans le navigateur
   useEffect(() => {
     localStorage.setItem("erp_history", JSON.stringify(history));
   }, [history]);
 
-  // RÉSONANCE : Écoute les commandes envoyées depuis le formulaire client (OrderForm)
+  // --- NOUVELLE LOGIQUE : RECUPERATION API ---
+  const fetchExternalOrders = async () => {
+    try {
+      const response = await fetch(API_URL);
+      if (response.ok) {
+        const data = await response.json();
+
+        // On compare si on a de nouvelles commandes pour afficher l'alerte
+        if (data.length > externalOrders.length) {
+          setAlert("Nouvelle commande reçue via le Web !");
+          setTimeout(() => setAlert(null), 5000);
+        }
+        setExternalOrders(data);
+      }
+    } catch (error) {
+      console.error("Impossible de récupérer les commandes web", error);
+    }
+  };
+
   useEffect(() => {
-    const bc = new BroadcastChannel("flux_commandes");
-    bc.onmessage = (event) => {
-      const newOrder = {
-        id: `WEB-${Date.now().toString().slice(-4)}`,
-        ...event.data,
-        dateReception: new Date().toLocaleString("fr-FR"),
-      };
-      setExternalOrders((prev) => [newOrder, ...prev]);
-      setAlert(`Nouvelle commande reçue : ${event.data.nom}`);
+    fetchExternalOrders(); // Au chargement
+    const interval = setInterval(fetchExternalOrders, 20000); // Toutes les 20 secondes
+    return () => clearInterval(interval);
+  }, [externalOrders.length]);
+  // ------------------------------------------
 
-      // Faire disparaître l'alerte après 5 secondes
-      setTimeout(() => setAlert(null), 5000);
-    };
-    return () => bc.close();
-  }, []);
-
-  // Fonction pour valider une vente et l'ajouter à l'historique
   const validateSale = (e) => {
     e.preventDefault();
     const invoice = {
@@ -62,13 +71,14 @@ export default function App() {
     };
     setHistory([invoice, ...history]);
     setLastInvoice(invoice);
-    // On retire la commande de la liste "Flux Web" une fois facturée
+
+    // Supprime localement de la liste visuelle
     setExternalOrders((prev) => prev.filter((o) => o.id !== formData.id));
+
     setAlert("Vente enregistrée avec succès !");
     setTimeout(() => setAlert(null), 3000);
   };
 
-  // Préparation des données pour le graphique du Dashboard
   const chartData = useMemo(() => {
     const groups = history.reduce((acc, curr) => {
       acc[curr.date] = (acc[curr.date] || 0) + curr.totalTTC;
@@ -81,7 +91,6 @@ export default function App() {
 
   return (
     <div className="app-container">
-      {/* Toast de notification en haut de l'écran */}
       {alert && (
         <div className="alert-toast">
           <Bell size={18} /> {alert}
@@ -95,7 +104,6 @@ export default function App() {
       />
 
       <main className="main-content">
-        {/* Vue : Tableau de Bord */}
         {currentView === "dashboard" && (
           <DashboardView
             history={history}
@@ -104,7 +112,6 @@ export default function App() {
           />
         )}
 
-        {/* Vue : Commandes arrivant du Web */}
         {currentView === "external" && (
           <OrderList
             orders={externalOrders}
@@ -117,14 +124,13 @@ export default function App() {
                 prixHT: order.montant,
                 adresse: order.adresse,
                 quantite: order.quantite,
-                VenteNom: order.vendeurNom,
+                VenteNom: "", // L'utilisateur le remplira dans le Dashboard
               });
               setCurrentView("billing");
             }}
           />
         )}
 
-        {/* Vue : Formulaire de Facturation / Reçu */}
         {currentView === "billing" && (
           <BillingForm
             formData={formData}
@@ -134,10 +140,7 @@ export default function App() {
           />
         )}
 
-        {/* Vue : Historique complet des ventes */}
         {currentView === "history" && <HistoryTable history={history} />}
-
-        {/* Vue : Le Formulaire que le client voit */}
         {currentView === "client-view" && <OrderForm />}
       </main>
     </div>
