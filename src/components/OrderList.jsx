@@ -1,6 +1,6 @@
 import React from "react";
 import { ShoppingCart, Phone, MapPin, Tag } from "lucide-react";
-import "./OrderList.css"; // Assure-toi que le fichier CSS existe
+// import "./OrderList.css"; // Assure-toi que le fichier CSS existe
 
 export default function OrderList({ orders, onProcess }) {
   return (
